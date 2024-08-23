@@ -49,12 +49,28 @@ class TestBurger:
 
     "тест формирует рецепт с информацией о бургере"""
 
-
     def test_get_receipt(self, burger, mock_bun, mock_ingredient, expected_receipt):
         burger.set_buns(mock_bun)
         burger.add_ingredient(mock_ingredient)
-        assert burger.get_receipt() == expected_receipt
         receipt = burger.get_receipt()
-        assert mock_bun.get_name() in receipt
-        assert f"= {str(mock_ingredient.get_type()).lower()} {mock_ingredient.get_name()} =" in receipt
-        assert f"Price: {burger.get_price()}" in receipt
+        assert receipt == expected_receipt, f"Ожидался рецепт '{expected_receipt}', но получен '{receipt}'"
+
+    def test_bun_in_receipt(self, burger, mock_bun, mock_ingredient):
+        burger.set_buns(mock_bun)
+        burger.add_ingredient(mock_ingredient)
+        receipt = burger.get_receipt()
+        assert mock_bun.get_name() in receipt, f"Имя булочки '{mock_bun.get_name()}' отсутствует в рецепте"
+
+    def test_ingredient_in_receipt(self, burger, mock_bun, mock_ingredient):
+        burger.set_buns(mock_bun)
+        burger.add_ingredient(mock_ingredient)
+        receipt = burger.get_receipt()
+        expected_ingredient_text = f"= {str(mock_ingredient.get_type()).lower()} {mock_ingredient.get_name()} ="
+        assert expected_ingredient_text in receipt, f"Ингредиент '{expected_ingredient_text}' отсутствует в рецепте"
+
+    def test_price_in_receipt(self, burger, mock_bun, mock_ingredient):
+        burger.set_buns(mock_bun)
+        burger.add_ingredient(mock_ingredient)
+        receipt = burger.get_receipt()
+        expected_price_text = f"Price: {burger.get_price()}"
+        assert expected_price_text in receipt, f"Цена '{expected_price_text}' отсутствует в рецепте"
